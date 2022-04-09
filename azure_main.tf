@@ -15,56 +15,56 @@ provider "azurerm" {              ### Should match 'required_providers' LOCAL NA
 }
 
 resource "azurerm_resource_group" "resgroup" {
-  name     = "RG_67329562743"
+  name     = "RG_1005"
   location = "Southeast Asia"
 }
 
 # Create virtual network
-resource "azurerm_virtual_network" "TerraFormNetwork_67329562743" {
-    name                = "virt_net_name_67329562743"               ## Virtual network name
-    address_space       = ["10.10.10.0/24"]
+resource "azurerm_virtual_network" "TerraFormNetwork_1005" {
+    name                = "virt_net_name_1005"               ## Virtual network name
+    address_space       = ["10.10.0.0/16"]
     location            = "Southeast Asia"
-    resource_group_name = "RG_67329562743"
+    resource_group_name = "RG_1005"
 
     tags = {
         environment = "Terraform VNET tag"
     }
 }
 # Create subnet
-resource "azurerm_subnet" "terraform_subnet_67329562743" {
-    name                 = "subnet_name_67329562743"
-    resource_group_name = "RG_67329562743"
-    virtual_network_name = azurerm_virtual_network.TerraFormNetwork_67329562743.name
-    address_prefix       = "10.10.10.0/24"
+resource "azurerm_subnet" "terraform_subnet_1005" {
+    name                 = "subnet_name_1005"
+    resource_group_name = "RG_1005"
+    virtual_network_name = azurerm_virtual_network.TerraFormNetwork_1005.name
+    address_prefixes     = ["10.10.2.0/24"]
 }
 
 # Deploy Public IP
-resource "azurerm_public_ip" "pub_ip_resource_67329562743" {
-  name                = "public_ip_67329562743"
+resource "azurerm_public_ip" "pub_ip_resource_1005" {
+  name                = "public_ip_1005"
   location            = "Southeast Asia"
-  resource_group_name = "RG_67329562743"
+  resource_group_name = "RG_1005"
   allocation_method   = "Dynamic"
   sku                 = "Basic"
 }
 
 # Create NIC
-resource "azurerm_network_interface" "nic_resource_67329562743" {
-  name                = "nic_name_67329562743"
+resource "azurerm_network_interface" "nic_resource_1005" {
+  name                = "nic_name_1005"
   location            = "Southeast Asia"
-  resource_group_name = "RG_67329562743"
+  resource_group_name = "RG_1005"
 
     ip_configuration {
-    name                          = "ipconfig002"
-    subnet_id                     = azurerm_subnet.terraform_subnet_67329562743.id
+    name                          = "ipconfig001"
+    subnet_id                     = azurerm_subnet.terraform_subnet_1005.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pub_ip_resource_67329562743.id
+    public_ip_address_id          = azurerm_public_ip.pub_ip_resource_1005.id
   }
 }
 
 # Create Boot Diagnostic Account
-resource "azurerm_storage_account" "fileshare_67329562743" {      # File share
-  name                     = "storeacc67329562743"                # Storage Account - no_UNDESCORE
-  resource_group_name      = "RG_67329562743"
+resource "azurerm_storage_account" "fileshare_1005" {      # File share
+  name                     = "storeacc58295"                # Storage Account - no_UNDESCORE
+  resource_group_name      = "RG_1005"
   location                 = "Southeast Asia"
    account_tier            = "Standard"
    account_replication_type = "LRS"
@@ -76,11 +76,11 @@ resource "azurerm_storage_account" "fileshare_67329562743" {      # File share
   }
 
 # Create Virtual Machine
-resource "azurerm_virtual_machine" "vm_resource_67329562743" {
-  name                  = "virt_machine_67329562743"
+resource "azurerm_virtual_machine" "vm_resource_1005" {
+  name                  = "virt_machine_1005"
   location              = "Southeast Asia"
-  resource_group_name   = "RG_67329562743"
-  network_interface_ids = [azurerm_network_interface.nic_resource_67329562743.id]
+  resource_group_name   = "RG_1005"
+  network_interface_ids = [azurerm_network_interface.nic_resource_1005.id]
   vm_size               = "Standard_B1s"
   delete_os_disk_on_termination = true
   delete_data_disks_on_termination = true
@@ -93,7 +93,7 @@ resource "azurerm_virtual_machine" "vm_resource_67329562743" {
   }
 
   storage_os_disk {
-    name              = "osdisk1"
+    name              = "osdisk_1005"
     disk_size_gb      = "65"
     caching           = "ReadWrite"
     create_option     = "FromImage"
@@ -101,9 +101,9 @@ resource "azurerm_virtual_machine" "vm_resource_67329562743" {
   }
 
   os_profile {
-    computer_name  = "computername67329562743"
+    computer_name  = "computername_1005"
     admin_username = "myadminaccount"
-    admin_password = "PASSWORD_HERE!!!"
+    admin_password = "MyP@ssword!"
   }
 
   os_profile_linux_config {
@@ -112,7 +112,6 @@ resource "azurerm_virtual_machine" "vm_resource_67329562743" {
 
 boot_diagnostics {
         enabled     = "true"
-        storage_uri = azurerm_storage_account.fileshare_67329562743.primary_blob_endpoint
+        storage_uri = azurerm_storage_account.fileshare_1005.primary_blob_endpoint
     }
 }
-```
