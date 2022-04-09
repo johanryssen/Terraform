@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "resgroup" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "TerraFormNetwork_67329562743" {
-    name                = "virt_net_name_27-mar"               ## Virtual network name
+    name                = "virt_net_name_67329562743"               ## Virtual network name
     address_space       = ["10.10.10.0/24"]
     location            = "Southeast Asia"
     resource_group_name = "RG_67329562743"
